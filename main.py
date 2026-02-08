@@ -158,12 +158,9 @@ def calculate_priority(title: str, body: Optional[str], created_at: str) -> int:
         created = datetime.fromisoformat(created_at.replace('Z', '+00:00'))
         age_days = (datetime.now(created.tzinfo) - created).days
         
-        # Boost priority for old issues
-        if age_days > 180:  # 6 months
+        # Boost priority for old issues (if not already at max)
+        if keyword_priority < 5 and age_days > 90:  # 3 months
             keyword_priority = min(5, keyword_priority + 1)
-        elif age_days > 90:  # 3 months
-            if keyword_priority < 5:
-                keyword_priority = min(5, keyword_priority + 1)
     except Exception:
         pass
     
@@ -328,7 +325,7 @@ async def triage_issue(
                 break
         
         if existing_idx is not None:
-            triaged_issues[existing_idx].update(result)
+            triaged_issues[existing_idx] = result
         else:
             triaged_issues.append(result)
         
