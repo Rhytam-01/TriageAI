@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IssuePilot – GitHub Issue Triage</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">🎯</span>
+        <div>
+          <h1>IssuePilot</h1>
+          <p>GitHub Issue Triage System</p>
+        </div>
+      </div>
+      <nav class="tabs" role="tablist">
+        <button class="tab active" data-tab="sync"   role="tab" aria-selected="true">Sync from GitHub</button>
+        <button class="tab"        data-tab="triage" role="tab" aria-selected="false">Triage Issue</button>
+        <button class="tab"        data-tab="browse" role="tab" aria-selected="false">Browse Issues</button>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ── Sync Panel ── -->
+    <section id="panel-sync" class="panel active" role="tabpanel">
+      <div class="card">
+        <h2>Sync Issues from GitHub</h2>
+        <p class="hint">Fetch and automatically triage issues from any public GitHub repository.</p>
+        <form id="form-sync" novalidate>
+          <div class="form-row">
+            <label for="sync-owner">Owner <span class="required">*</span></label>
+            <input id="sync-owner" type="text" placeholder="e.g. facebook" autocomplete="off" required />
+          </div>
+          <div class="form-row">
+            <label for="sync-repo">Repository <span class="required">*</span></label>
+            <input id="sync-repo" type="text" placeholder="e.g. react" autocomplete="off" required />
+          </div>
+          <div class="form-row">
+            <label for="sync-state">State</label>
+            <select id="sync-state">
+              <option value="open">Open</option>
+              <option value="closed">Closed</option>
+              <option value="all">All</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-primary">Sync Issues</button>
+        </form>
+        <div id="sync-result" class="result hidden"></div>
+      </div>
+    </section>
+
+    <!-- ── Triage Panel ── -->
+    <section id="panel-triage" class="panel" role="tabpanel">
+      <div class="card">
+        <h2>Manually Triage an Issue</h2>
+        <p class="hint">Classify and prioritise a single issue by its title and description.</p>
+        <form id="form-triage" novalidate>
+          <div class="form-row">
+            <label for="triage-number">Issue Number <span class="required">*</span></label>
+            <input id="triage-number" type="number" placeholder="e.g. 42" min="1" required />
+          </div>
+          <div class="form-row">
+            <label for="triage-title">Title <span class="required">*</span></label>
+            <input id="triage-title" type="text" placeholder="e.g. App crashes on startup" required />
+          </div>
+          <div class="form-row">
+            <label for="triage-body">Body</label>
+            <textarea id="triage-body" rows="4" placeholder="Optional description of the issue…"></textarea>
+          </div>
+          <div class="form-row">
+            <label for="triage-created">Created At</label>
+            <input id="triage-created" type="datetime-local" />
+          </div>
+          <button type="submit" class="btn-primary">Triage Issue</button>
+        </form>
+        <div id="triage-result" class="result hidden"></div>
+      </div>
+    </section>
+
+    <!-- ── Browse Panel ── -->
+    <section id="panel-browse" class="panel" role="tabpanel">
+      <div class="card">
+        <h2>Browse Triaged Issues</h2>
+        <p class="hint">Filter and review all previously triaged issues.</p>
+        <div class="filter-bar">
+          <div class="form-row inline">
+            <label for="browse-classification">Classification</label>
+            <select id="browse-classification">
+              <option value="">All</option>
+              <option value="bug">Bug</option>
+              <option value="feature">Feature</option>
+              <option value="docs">Docs</option>
+            </select>
+          </div>
+          <div class="form-row inline">
+            <label for="browse-priority">Priority</label>
+            <select id="browse-priority">
+              <option value="">All</option>
+              <option value="5">5 – Critical</option>
+              <option value="4">4 – High</option>
+              <option value="3">3 – Medium</option>
+              <option value="2">2 – Low</option>
+              <option value="1">1 – Trivial</option>
+            </select>
+          </div>
+          <button id="btn-browse" class="btn-primary">Load Issues</button>
+        </div>
+        <div id="browse-result" class="result hidden"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="/static/script.js"></script>
+</body>
+</html>
