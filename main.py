@@ -53,7 +53,7 @@ class Issue(BaseModel):
     """Issue model"""
     number: int
     title: str
-    body: Optional[str]
+    body: Optional[str] = None
     created_at: str
     state: str
     url: str
@@ -63,10 +63,10 @@ class TriagedIssue(BaseModel):
     """Triaged issue model"""
     number: int
     title: str
-    body: Optional[str]
-    created_at: str
-    state: str
-    url: str
+    body: Optional[str] = None
+    created_at: Optional[str] = None
+    state: Optional[str] = None
+    url: Optional[str] = None
     classification: str
     priority: int
     triaged_at: str
@@ -251,17 +251,17 @@ async def sync_issues(
                 issue["created_at"]
             )
             
-            triaged = {
-                "number": issue["number"],
-                "title": issue["title"],
-                "body": issue.get("body"),
-                "created_at": issue["created_at"],
-                "state": issue["state"],
-                "url": issue["html_url"],
-                "classification": classification,
-                "priority": priority,
-                "triaged_at": datetime.now().isoformat()
-            }
+            triaged = TriagedIssue(
+                number=issue["number"],
+                title=issue["title"],
+                body=issue.get("body"),
+                created_at=issue["created_at"],
+                state=issue["state"],
+                url=issue["html_url"],
+                classification=classification,
+                priority=priority,
+                triaged_at=datetime.now().isoformat()
+            ).model_dump()
             
             new_triaged.append(triaged)
             triaged_issues.append(triaged)
@@ -305,14 +305,15 @@ async def triage_issue(
         created = created_at or datetime.now().isoformat()
         priority = calculate_priority(title, body, created)
         
-        result = {
-            "number": number,
-            "title": title,
-            "body": body,
-            "classification": classification,
-            "priority": priority,
-            "triaged_at": datetime.now().isoformat()
-        }
+        result = TriagedIssue(
+            number=number,
+            title=title,
+            body=body,
+            created_at=created_at,
+            classification=classification,
+            priority=priority,
+            triaged_at=datetime.now().isoformat()
+        ).model_dump()
         
         # Optionally save to storage
         triaged_issues = load_triaged_issues()
