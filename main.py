@@ -9,12 +9,15 @@ import httpx
 from datetime import datetime
 from typing import List, Dict, Optional
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 
 app = FastAPI(title="IssuePilot", description="GitHub Issue Triage System")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Configuration
 GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "")
@@ -197,17 +200,10 @@ async def fetch_github_issues(owner: str, repo: str, state: str = "open") -> Lis
     return issues
 
 
-@app.get("/")
+@app.get("/", response_class=FileResponse, include_in_schema=False)
 async def root():
-    """Root endpoint"""
-    return {
-        "message": "IssuePilot - GitHub Issue Triage API",
-        "endpoints": {
-            "/sync": "Fetch and triage issues from GitHub",
-            "/triage": "Manually triage a specific issue",
-            "/list": "List all triaged issues"
-        }
-    }
+    """Serve the frontend UI"""
+    return FileResponse("static/index.html")
 
 
 @app.post("/sync")
